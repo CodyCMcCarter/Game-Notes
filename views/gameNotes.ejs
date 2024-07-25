@@ -1,0 +1,69 @@
+<%- include('partials/header.ejs'); -%>
+
+<div class="list-header">
+    <h1>Welcome to my list of game notes and reviews</h1>
+    <form action="/">
+        <button class="header-button" type="submit"><img class="icon"
+            src="/assets/icons/home.svg" alt="home image"></button>
+    </form>
+</div>
+
+<div class="container">
+    <div class="game-info-container">
+        <h3 class="game-title"><%=gameInfo.name%></h3>
+        <p class="game-summary"><%=gameInfo.summary%></p>
+        <p class="game-rating">Rating: <%=gameReview.rating%></p>
+        <a href="<%=gameInfo.get_link%>" class="game-link" target="_blank" rel="noopener noreferrer">Get it here</a>
+        <img class="game-cover" src=<%=gameInfo.image_link%>/>
+    </div>
+    <div class="game-review-container">
+        <p>Date Played: <%=gameReview.date_played%></p>
+        <p>Play Time: <%=gameReview.play_time%></p>
+        <p><%=gameReview.review%></p>
+    </div>
+    <a href="/<%=gameInfo.id%>/edit">Edit Game or Review</a>
+    <div class="game-notes-container">
+        <h3>Notes:</h3>
+        <%gameNotes.forEach((note) => {%>
+            <div class="note">
+                <p class="note-body" id="note<%=note.id%>">
+                    <%=note.body%>
+                </p>
+            
+                <form class="edit" action="/editNote" method="post">
+                    <input type="hidden" name="noteId" value="<%=note.id%>">
+                    <input type="hidden" name="gameId" value="<%=gameInfo.id%>">
+                    <textarea id="input<%=note.id%>" type="text" name="updatedNoteBody" autocomplete="off"
+                        autofocus="true" hidden="true"><%=note.body%></textarea><br>
+                    <button id="done<%=note.id%>" class="edit" type="submit" hidden><img class="icon"
+                        src="/assets/icons/check-solid.svg" alt="tick image"></button>
+                </form>
+                <div class="note-buttons">
+                    <button id="edit<%=note.id%>" class="edit" onclick="handler('<%=note.id%>')"><img class="icon"
+                        src="/assets/icons/pencil-solid.svg" alt="pencil image"></button>
+
+                    <form action="/deleteNote" method="delete">
+                        <input type="hidden" name="noteId" value="<%=note.id%>"/>
+                        <input type="hidden" name="gameId" value="<%=gameInfo.id%>"/>
+                        <button type="submit" name="deleteNoteId"><img class="icon"
+                            src="/assets/icons/trash.svg" alt="trash can image"></button>
+                    </form>
+                </div>
+            </div>
+        <%});%>
+    </div>
+
+    <form action="/deleteReview" method="delete">
+        <button type="submit" name="deleteGame">Delete Review</button>
+    </form>
+</div>
+
+<script>
+    function handler(id) {
+        document.getElementById("note" + id).setAttribute("hidden", true)
+        document.getElementById("edit" + id).setAttribute("hidden", true)
+        document.getElementById("done" + id).removeAttribute("hidden")
+        document.getElementById("input" + id).removeAttribute("hidden")
+    }
+</script>
+<%- include('partials/footer.ejs'); -%>

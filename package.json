@@ -1,0 +1,20 @@
+{
+  "name": "gamenotesproject",
+  "version": "1.0.0",
+  "description": "A site for notes and reviews on video games I've played",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Cody McCarter",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^1.7.2",
+    "body-parser": "^1.20.2",
+    "ejs": "^3.1.10",
+    "express": "^4.19.2",
+    "nl2br": "^0.0.3",
+    "pg": "^8.12.0"
+  }
+}
