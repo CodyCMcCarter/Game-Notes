@@ -1,0 +1,64 @@
+<%- include('partials/header.ejs'); -%>
+
+<div class="list-header">
+    <h1>Add a new game review</h1>
+    <form action="/">
+        <button class="header-button" type="submit"><img class="icon"
+            src="/assets/icons/home.svg" alt="home image"></button>
+    </form>
+</div>
+
+<div class="container">
+    <%if(locals.gameInfo) {%>
+        <form class="add-game-notes" action="/edit" method="post">
+            <div class="game-container">
+                <input type="hidden" name="gameId" value="<%=gameInfo.id%>"/>
+                <label for="title">Game Title:</label><br/>
+                <input type="text" id="gameTitle" class="game-title" name="title" value="<%=gameInfo.name%>"><br/>
+                <label for="imageLink">Game Cover:</label><br/>
+                <input type="text" id="imageLink" class="image-input" name="imageLink" value="<%=gameInfo.image_link%>"/><br/>
+                <label for="summary">Game Summary:</label><br/>
+                <textarea name="summary"><%=gameInfo.summary%></textarea><br/>
+                <label for="getLink">Link to get the game: </label><br/>
+                <input type="text" id="getLink" class="get-link" name="getLink" value="<%=gameInfo.get_link%>">
+            </div>
+            <div class="game-review-container">
+                <label for="datePlayed">Date Played: </label>
+                <input type="text" name="datePlayed" value="<%=gameReview.date_played%>"><br/>
+                <label for="playTime">Play Time: </label>
+                <input type="text" name="playTime" value="<%=gameReview.play_time%>"><br/>
+                <label for="rating">Rating:</label>
+                <input type="text" name="rating" value="<%=gameReview.rating%>"><br/>
+                <label for="review">Review: </label><br/>
+                <textarea name="review"><%=gameReview.review%></textarea>
+            </div>
+            <button id="updateButton" type="submit" class="submit-updated-game">Update Review</button>
+        </form>
+    <%} else {%>
+        <form class="add-game-notes" action="/add" method="post">
+            <div class="game-container">
+                <label for="title">Game Title:</label><br/>
+                <input type="text" id="gameTitle" class="game-title" name="title"><br/>
+                <label for="imageLink">Game Cover:</label><br/>
+                <input type="text" id="imageLink" class="image-input" name="imageLink"/><br/>
+                <label for="summary">Game Summary:</label><br/>
+                <textarea name="summary"></textarea><br/>
+                <label for="getLink">Link to get the game: </label><br/>
+                <input type="text" id="getLink" class="get-link" name="getLink">
+            </div>
+            <div class="game-review-container">
+                <label for="datePlayed">Date Played: </label>
+                <input type="text" name="datePlayed"><br/>
+                <label for="playTime">Play Time: </label>
+                <input type="text" name="playTime"><br/>
+                <label for="review">Review: </label>
+                <textarea name="review"></textarea><br/>
+                <label for="rating">Rating:</label>
+                <input type="text" name="rating"><br/>
+            </div>
+            <button type="submit" class="submit-new-game">Add Review</button>
+        </form>
+    <%}%>
+</div>
+
+<%- include('partials/footer.ejs'); -%>
