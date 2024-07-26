@@ -21,7 +21,10 @@
         <p>Play Time: <%=gameReview.play_time%></p>
         <p><%=gameReview.review%></p>
     </div>
-    <a href="/<%=gameInfo.id%>/edit">Edit Game or Review</a>
+    <form action="/editGame" method="get">
+        <input type="hidden" name="editGameId" value="<%=gameInfo.id%>"/>
+        <button type="submit">Edit Game or Review</button>
+    </form>
     <div class="game-notes-container">
         <h3>Notes:</h3>
         <%gameNotes.forEach((note) => {%>
