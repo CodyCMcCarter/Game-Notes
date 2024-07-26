@@ -28,14 +28,14 @@ async function getGameInfo(gameId = 0){
         return games;
     } else {
         const results = await db.query("SELECT * FROM games WHERE id = $1", [gameId]);
-        let game = results.rows;
+        let game = results.rows[0];
         return game;
     }
 }
 
 async function getGameReview(gameId){
     const results = await db.query("SELECT review, date_played, play_time, rating FROM reviews WHERE game = $1", [gameId]);
-    let review = results.rows;
+    let review = results.rows[0];
     return review;
 }
 
@@ -66,6 +66,7 @@ app.post("/add", async (req, res) => {
             "INSERT INTO games (name, summary, get_link, image_link) VALUES($1, $2, $3, $4) RETURNING games.id", 
             [title, summary, getLink, imageLink]
         );
+
         newId = result.rows[0].id;
 
         await db.query(
@@ -90,50 +91,52 @@ app.post("/edit", async (req, res) => {
     const rating = req.body.rating;
 
     try {
-        const result = await db.query(
-            "UPDATE games SET name = $1, summary = $2, get_link=$3, image_link = $4) WHERE id = $5 RETURNING games.id", 
-            [title, summary, getLink, imageLink, id]
-        );
-
-        const updatedId = result.rows[0].id;
-
         await db.query(
-            "UPDATE reviews SET review = $2, date_played = $3, play_time = $4, rating = $5) WHERE game = $1",
-            [id, review, date_played, play_time, rating]
+            "UPDATE games SET name = $1, summary = $2, get_link = $3, image_link = $4 WHERE id = $5", 
+            [title, summary, getLink, imageLink, id]
         );
     } catch (e) {
         console.error(e);
     }
-    console.log(updatedId);
-    res.redirect("/"+updatedId);
-});
 
-app.get("/:id", async (req, res) => {
-    const id = req.params.id;
-    if(id === "0"){
-        res.render("addGameReview.ejs");
-    } else {
-        const gameInfo = await getGameInfo(id);
-        const gameReview = await getGameReview(id);
-        const gameNotes = await getGameNotes(id);
-
-        res.render("gameNotes.ejs", {
-            gameInfo: gameInfo[0], 
-            gameReview: gameReview[0], 
-            gameNotes: gameNotes
-        });
+    try {
+        await db.query(
+            "UPDATE reviews SET review = $1, date_played = $2, play_time = $3, rating = $4 WHERE game = $5",
+            [review, date_played, play_time, rating, id]
+        );
+    } catch (e) {
+        console.error(e);
     }
+
+    res.redirect("/"+id);
 });
 
-app.get("/:id/edit", async (req, res) => {
-    const id = req.params.id;
+app.get("/editGame", async (req, res) => {
+    const id = req.query.editGameId;
     const gameInfo = await getGameInfo(id);
     const gameReview = await getGameReview(id);
     const gameNotes = await getGameNotes(id);
 
     res.render("addGameReview.ejs", {
-        gameInfo: gameInfo[0], 
-        gameReview: gameReview[0], 
+        gameInfo: gameInfo, 
+        gameReview: gameReview, 
+        gameNotes: gameNotes
+    });
+});
+
+app.get("/addGame", async (req, res) => {
+    res.render("addGameReview.ejs");
+});
+
+app.get("/:id", async (req, res) => {
+    const id = req.params.id;
+    const gameInfo = await getGameInfo(id);
+    const gameReview = await getGameReview(id);
+    const gameNotes = await getGameNotes(id);
+
+    res.render("gameNotes.ejs", {
+        gameInfo: gameInfo, 
+        gameReview: gameReview, 
         gameNotes: gameNotes
     });
 });
