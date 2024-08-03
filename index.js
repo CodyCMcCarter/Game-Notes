@@ -2,22 +2,25 @@ import express from "express";
 import bodyParser from "body-parser";
 import pg from "pg";
 import axios from "axios";
+import env from "dotenv";
 
 const app = express();
 const port = 3000;
+//Need to readd the api useage
 const apiUrl = "https://api.igdb.com/v4/";
-const clientId = '8fnbx9z41r2cwpn8u599u4bmhm0jti';
-const authorization = 'Bearer 1fanfm8bkk8nchdxltlc3wud8k5chs';
+const clientId = process.env.API_CLIENT_ID;
+const authorization = process.env.API_BEARER_TOKEN;
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static("public"));
+env.config();
 
 const db = new pg.Client({
-    user: "postgres",
-    host: "localhost",
-    database: "game_notes",
-    password: "password",
-    port: 5432,
+    user: process.env.PG_USER,
+    host: process.env.PG_HOST,
+    database: process.env.PG_DATABASE,
+    password: process.env.PG_PASSWORD,
+    port: process.env.PG_PORT,
 });
 db.connect();
 
